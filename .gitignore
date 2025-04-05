@@ -1,0 +1,3 @@
+backups/
+.pytest_cache/
+__pycache__/
