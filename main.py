@@ -2,8 +2,8 @@ import os, re, sys
 
 levels =["DEBUG", "INFO", "WARNING", "ERROR","CRITICAL"]
 pattern = r"/[^/\s]+(?:/[^/\s]+)*/"     #   Паттерн для поиска в строках хендлеров
-handlers=list()
-total=0     #   Счет количества запросов к хендлерам
+handlers = list()
+total = 0     #   Счет количества запросов к хендлерам
 
 class LogReport:
 
@@ -33,6 +33,7 @@ class LogReport:
 
     #   Функция заполняет матрицу значениями по каждому уровню логирования
     def fill_matrix(self, matrix: list, handlers: list, levels: list, rows: list, total: int) -> tuple:
+
         for value in rows:
             handler_index = None
             level_index = None
@@ -66,7 +67,7 @@ class LogReport:
 
         matrix = [[0]*5 for _ in range(len(cleaned_handlers))]
 
-        filler_matrix = log_rep.fill_matrix(matrix, cleaned_handlers, raw_handlers, total)
+        filler_matrix = log_rep.fill_matrix(matrix, cleaned_handlers, levels, raw_handlers, total)
 
         total_for_level = []
 
@@ -80,7 +81,6 @@ class LogReport:
 
 
         return filler_matrix, handlers_copy, total_for_level
-
 
 def main():
 
@@ -96,11 +96,11 @@ def main():
         else:
             print(f"Нет файла {path}")
 
-    get_filled_matrix = LogReport().get_filled_matrix
+    get_filled_matrix = LogReport().get_filled_matrix()
 
-    print("Total requests: ", get_filled_matrix()[0][1])
+    print("Total requests: ", get_filled_matrix[0][1])
 
-    data = tuple(get_filled_matrix()[0])
+    data = get_filled_matrix[0]
     list_handlers=list(handlers)
 
     #   Настройка ширины столбцов вывода
@@ -113,9 +113,9 @@ def main():
     # Печать таблицы
     print("HANDLER" + " " * column_widths[5] + "  "+"  ".join(f"{str(levels[i]):<{column_widths[i]}}" for i in range(len(levels))))
     for i in range(len(list_handlers)):
-        print_row([get_filled_matrix()[1][i]] + data[0][list_handlers.index(list_handlers[i])])
-    level_values = get_filled_matrix()[0][0]
-    print("\n"+" " * column_widths[0] + "  "+"  ".join(f"{str(get_filled_matrix()[2][i]):<{column_widths[i]}}" for i in range(len(levels))))
+        print_row([get_filled_matrix[1][i]] + data[0][list_handlers.index(list_handlers[i])])
+    level_values = get_filled_matrix[0][0]
+    print("\n"+" " * column_widths[0] + "  "+"  ".join(f"{str(get_filled_matrix[2][i]):<{column_widths[i]}}" for i in range(len(levels))))
 
     
 if __name__=="__main__":
